@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}Clientes | Zippy Cloud{% endblock %}
+{% block page_title %}Clientes{% endblock %}
+{% block content %}
+  <div class="page-actions">
+    <form class="searchbar">
+      <input name="q" value="{{ termo }}" placeholder="Buscar por nome ou CPF">
+      <button class="btn ghost">Buscar</button>
+    </form>
+    <a class="btn primary" href="{{ url_for('cliente_novo') }}">+ Novo cliente</a>
+  </div>
+  <section class="panel">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Cliente</th>
+            <th>CPF</th>
+            <th>Telefone</th>
+            <th>Fidelidade</th>
+            <th>Cupom</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in clientes %}
+            <tr>
+              <td>
+                <a class="link" href="{{ url_for('cliente_detalhe', item_id=item.id) }}">
+                  <strong>{{ item.nome }}</strong>
+                </a>
+                <small class="block">{{ item.email or 'Sem e-mail' }}</small>
+              </td>
+              <td>{{ item.cpf }}</td>
+              <td>{{ item.telefone }}</td>
+              <td>{{ item.itens_fidelidade }}/10</td>
+              <td>
+                {% set ativos = item.cupons|selectattr('utilizado','equalto',false)|list %}
+                {% if ativos %}
+                  <span class="badge success">{{ ativos[-1].desconto }}%</span>
+                {% else %}
+                  <span class="muted">—</span>
+                {% endif %}
+              </td>
+              <td class="actions">
+                <a class="btn ghost small" href="{{ url_for('cliente_editar', item_id=item.id) }}">Editar</a>
+                <form method="post" action="{{ url_for('cliente_excluir', item_id=item.id) }}">
+                  <button class="btn danger small">Excluir</button>
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+{% endblock %}

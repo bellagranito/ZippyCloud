@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block title %}Produto | Zippy Cloud{% endblock %}
+{% block page_title %}{{ 'Editar produto' if item else 'Cadastrar produto' }}{% endblock %}
+{% block content %}
+  <form method="post" enctype="multipart/form-data" class="panel form-card">
+    <div class="form-section">
+      <h2>Informações do produto</h2>
+      <div class="form-grid">
+        <label class="span-2">Nome<input name="nome" required value="{{ item.nome if item else '' }}"></label>
+        <label>
+          Código de barras
+          <input name="codigo_barras" required {{ 'readonly' if item else '' }} value="{{ item.codigo_barras if item else '' }}">
+        </label>
+        <label>
+          Categoria
+          <select name="categoria_id" required>
+            <option value="">Selecione</option>
+            {% for cat in categorias %}
+              <option value="{{ cat.id }}" {% if item and item.categoria_id==cat.id %}selected{% endif %}>
+                {{ cat.nome }}
+              </option>
+            {% endfor %}
+          </select>
+        </label>
+        <label>
+          Fornecedor
+          <select name="fornecedor_id" required>
+            <option value="">Selecione</option>
+            {% for f in fornecedores %}
+              <option value="{{ f.id }}" {% if item and item.fornecedor_id==f.id %}selected{% endif %}>
+                {{ f.nome_empresa }}
+              </option>
+            {% endfor %}
+          </select>
+        </label>
+        <label>
+          Valor de custo
+          <input type="number" step="0.01" min="0" name="valor_custo" required value="{{ item.valor_custo if item else '' }}">
+        </label>
+        <label>
+          Valor de venda
+          <input type="number" step="0.01" min="0" name="valor_venda" required value="{{ item.valor_venda if item else '' }}">
+        </label>
+        <label>
+          Estoque atual
+          <input type="number" min="0" name="estoque" required value="{{ item.estoque if item else 0 }}">
+        </label>
+        <label>
+          Estoque mínimo
+          <input type="number" min="0" name="quantidade_minima" required value="{{ item.quantidade_minima if item else 0 }}">
+        </label>
+        <label>Foto (JPG/PNG)<input type="file" name="foto" accept=".jpg,.jpeg,.png"></label>
+        <label class="span-2">
+          Descrição
+          <textarea name="descricao" rows="4">
+            {{ item.descricao if item else '' }}
+          </textarea>
+        </label>
+      </div>
+    </div>
+    <div class="form-actions">
+      <a class="btn ghost" href="{{ url_for('produtos') }}">Cancelar</a>
+      <button class="btn primary">Salvar produto</button>
+    </div>
+  </form>
+{% endblock %}

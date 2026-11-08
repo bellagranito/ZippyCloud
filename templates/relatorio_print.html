@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <title>Relatório Zippy Cloud</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+  </head>
+  <body class="print-page">
+    <header>
+      <div class="brand">
+        <img src="{{ url_for('static', filename='img/zippy-wordmark.png') }}" alt="Zippy Cloud" style="width:150px">
+        <div>
+          <small>Relatório gerencial</small>
+        </div>
+      </div>
+      <div>{{ agora.strftime('%d/%m/%Y %H:%M') }}</div>
+    </header>
+    <button class="btn primary no-print" onclick="window.print()">Imprimir / Salvar em PDF</button>
+    {% if 'indicadores' in secoes %}
+      <section>
+        <h2>Indicadores gerais</h2>
+        <div class="print-kpis">
+          <div>
+            <small>Faturamento</small>
+            <strong>{{ indicadores.faturamento|brl }}</strong>
+          </div>
+          <div>
+            <small>Vendas</small>
+            <strong>{{ indicadores.vendas }}</strong>
+          </div>
+          <div>
+            <small>Clientes</small>
+            <strong>{{ indicadores.clientes }}</strong>
+          </div>
+          <div>
+            <small>Estoque baixo</small>
+            <strong>{{ indicadores.produtos_baixos }}</strong>
+          </div>
+        </div>
+      </section>
+    {% endif %}
+    {% if 'produtos' in secoes %}
+      <section>
+        <h2>Produtos mais vendidos</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Produto</th>
+              <th>Quantidade</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for nome,qtd in produtos %}
+              <tr>
+                <td>{{ nome }}</td>
+                <td>{{ qtd }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </section>
+    {% endif %}
+    {% if 'clientes' in secoes %}
+      <section>
+        <h2>Clientes que mais compram</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Cliente</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for nome,total in clientes %}
+              <tr>
+                <td>{{ nome }}</td>
+                <td>{{ total|brl }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </section>
+    {% endif %}
+    {% if 'fornecedores' in secoes %}
+      <section>
+        <h2>Fornecedores com mais produtos</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Fornecedor</th>
+              <th>Produtos</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for nome,qtd in fornecedores %}
+              <tr>
+                <td>{{ nome }}</td>
+                <td>{{ qtd }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </section>
+    {% endif %}
+    {% if 'funcionarios' in secoes %}
+      <section>
+        <h2>Desempenho dos funcionários</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Funcionário</th>
+              <th>Vendas</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for nome,qtd,total in funcionarios %}
+              <tr>
+                <td>{{ nome }}</td>
+                <td>{{ qtd }}</td>
+                <td>{{ total|brl }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </section>
+    {% endif %}
+  </body>
+</html>

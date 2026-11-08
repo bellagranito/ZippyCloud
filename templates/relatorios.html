@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% block title %}Relatórios | Zippy Cloud{% endblock %}
+{% block page_title %}Relatórios estratégicos{% endblock %}
+{% block content %}
+  <div class="page-actions">
+    <p class="muted">Escolha as seções que deseja destacar e gere uma versão pronta para impressão/PDF.</p>
+  </div>
+  <form class="panel report-builder" method="get" action="{{ url_for('relatorio_imprimir') }}" target="_blank">
+    <strong>Seções do relatório</strong>
+    <label><input type="checkbox" name="secao" value="indicadores" checked> Indicadores gerais</label>
+    <label><input type="checkbox" name="secao" value="produtos" checked> Produtos mais vendidos</label>
+    <label><input type="checkbox" name="secao" value="clientes" checked> Clientes que mais compram</label>
+    <label><input type="checkbox" name="secao" value="fornecedores" checked> Fornecedores</label>
+    <label>
+      <input type="checkbox" name="secao" value="funcionarios" checked>
+      Desempenho dos funcionários
+    </label>
+    <button class="btn primary">Gerar relatório</button>
+  </form>
+  <div class="kpi-grid compact-kpis">
+    <article class="kpi">
+      <span class="kpi-icon">R$</span>
+      <div>
+        <small>Faturamento</small>
+        <strong>{{ indicadores.faturamento|brl }}</strong>
+      </div>
+    </article>
+    <article class="kpi">
+      <span class="kpi-icon">▤</span>
+      <div>
+        <small>Vendas</small>
+        <strong>{{ indicadores.vendas }}</strong>
+      </div>
+    </article>
+    <article class="kpi">
+      <span class="kpi-icon">♙</span>
+      <div>
+        <small>Clientes</small>
+        <strong>{{ indicadores.clientes }}</strong>
+      </div>
+    </article>
+    <article class="kpi danger-kpi">
+      <span class="kpi-icon">!</span>
+      <div>
+        <small>Estoque baixo</small>
+        <strong>{{ indicadores.produtos_baixos }}</strong>
+      </div>
+    </article>
+  </div>
+  <div class="grid-2">
+    <section class="panel">
+      <h2>Produtos mais vendidos</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Produto</th>
+            <th>Quantidade</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for nome,qtd in produtos %}
+            <tr>
+              <td>{{ nome }}</td>
+              <td>{{ qtd }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+    <section class="panel">
+      <h2>Clientes que mais compram</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Cliente</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for nome,total in clientes %}
+            <tr>
+              <td>{{ nome }}</td>
+              <td>{{ total|brl }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+  </div>
+{% endblock %}

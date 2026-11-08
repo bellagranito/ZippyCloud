@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% macro card_erro() %}
+<div class="error-card">
+  <strong>{{ codigo }}</strong>
+  <h2>{{ mensagem }}</h2>
+  {% if usuario_atual %}
+    <a class="btn primary" href="{{ url_for('dashboard') }}">Voltar ao dashboard</a>
+  {% else %}
+    <a class="btn primary" href="{{ url_for('login') }}">Voltar ao login</a>
+  {% endif %}
+</div>
+{% endmacro %}
+
+{% block title %}Erro {{ codigo }} | Zippy Cloud{% endblock %}
+{% block page_title %}Erro {{ codigo }}{% endblock %}
+{% block content %}{{ card_erro() }}{% endblock %}
+{% block public_content %}
+<div class="public-page error-public-page">
+  <div class="public-card">{{ card_erro() }}</div>
+</div>
+{% endblock %}

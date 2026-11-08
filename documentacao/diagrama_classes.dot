@@ -1,0 +1,56 @@
+digraph ZippyCloud {
+  graph [rankdir=LR, bgcolor="white", pad="0.3", nodesep="0.55", ranksep="0.9", fontname="Arial"];
+  node [shape=record, style="rounded,filled", fillcolor="#F6F8FC", color="#1D4ED8", fontname="Arial", fontsize=10, margin="0.12"];
+  edge [color="#64748B", fontname="Arial", fontsize=9];
+
+  Pessoa [fillcolor="#F3E8FF", label="{Pessoa|+ nome (conceitual)\l|+ descricao()\l+ tipo_pessoa()\l}"];
+  Funcionario [label="{Funcionario|id : int\lcpf : str\lnome : str\lemail : str\lcargo : str\lperfil : str\lativo : bool\l|+ set_senha()\l+ verificar_senha()\l+ descricao()\l+ tipo_pessoa()\l+ is_admin\l}"];
+  Cliente [label="{Cliente|id : int\lcpf : str\lnome : str\ltelefone : str\litens_fidelidade : int\l|+ descricao()\l+ tipo_pessoa()\l}"];
+  Categoria [label="{Categoria|id : int\lnome : str\l}"];
+  Fornecedor [label="{Fornecedor|id : int\lnome_empresa : str\lrepresentante : str\ltelefone : str\l}"];
+  Produto [label="{Produto|id : int\lcodigo_barras : str\lnome : str\lvalor_venda : Decimal\lvalor_custo : Decimal\lestoque : int\lquantidade_minima : int\l|+ estoque_baixo\l}"];
+  Cupom [label="{Cupom|id : int\lcodigo : str\ldesconto : int\lutilizado : bool\lcliente_id : int\l|+ ativo\l}"];
+  Venda [label="{Venda|id : int\ldata_venda : datetime\lsubtotal : Decimal\ldesconto : Decimal\lvalor_total : Decimal\lcliente_id : int\lfuncionario_id : int\l}"];
+  VendaItem [label="{VendaItem|id : int\lquantidade : int\lvalor_unitario : Decimal\lsubtotal : Decimal\lvenda_id : int\lproduto_id : int\l}"];
+  AlertaEstoque [label="{AlertaEstoque|id : int\ldata_ocorrencia : datetime\lquantidade : int\lresolvido : bool\lproduto_id : int\l}"];
+
+  Pessoa -> Funcionario [arrowhead="empty", label="herança", color="#8B5CF6"];
+  Pessoa -> Cliente [arrowhead="empty", label="herança", color="#8B5CF6"];
+  Categoria -> Produto [label="1 : N"];
+  Fornecedor -> Produto [label="1 : N"];
+  Cliente -> Venda [label="1 : N"];
+  Funcionario -> Venda [label="1 : N"];
+  Cliente -> Cupom [label="1 : N"];
+  Venda -> VendaItem [label="1 : N", arrowhead="diamond"];
+  Produto -> VendaItem [label="1 : N"];
+  Produto -> AlertaEstoque [label="1 : N"];
+  Cupom -> Venda [label="0..1 : N"];
+
+  subgraph cluster_services {
+    label="Classes de serviço / regras de negócio";
+    color="#CBD5E1";
+    style="rounded,dashed";
+    node [fillcolor="#FFF7FB", color="#EC4899"];
+    AuthService [label="{AuthService|+ senha_forte()\l+ autenticar()\l}"];
+    VendaService [label="{VendaService|+ validar()\l+ calcular_total()\l+ finalizar()\l}"];
+    EstoqueService [label="{EstoqueService|+ verificar_alerta()\l}"];
+    CupomService [label="{CupomService|+ cupom_ativo()\l+ registrar_itens()\l+ utilizar()\l}"];
+    ProdutoService [label="{ProdutoService|+ buscar(int)\l+ buscar(str)\l}"];
+    PersistenciaService [label="{PersistenciaService|+ confirmar()\l+ cancelar()\l}"];
+    ValidacaoService [label="{ValidacaoService|+ obrigatorios()\l+ cpf()\l+ telefone()\l+ cep()\l+ email()\l}"];
+    ReportService [label="{ReportService|+ indicadores()\l+ produtos_mais_vendidos()\l+ clientes_que_mais_compram()\l}"];
+  }
+
+  AuthService -> Funcionario [style=dashed, arrowhead=open];
+  VendaService -> Venda [style=dashed, arrowhead=open];
+  VendaService -> VendaItem [style=dashed, arrowhead=open];
+  EstoqueService -> Produto [style=dashed, arrowhead=open];
+  EstoqueService -> AlertaEstoque [style=dashed, arrowhead=open];
+  CupomService -> Cliente [style=dashed, arrowhead=open];
+  CupomService -> Cupom [style=dashed, arrowhead=open];
+  ProdutoService -> Produto [style=dashed, arrowhead=open, label="sobrecarga"];
+  VendaService -> PersistenciaService [style=dashed, arrowhead=open];
+  ReportService -> Venda [style=dashed, arrowhead=open];
+  ValidacaoService -> Funcionario [style=dashed, arrowhead=open];
+  ValidacaoService -> Cliente [style=dashed, arrowhead=open];
+}

@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}Vendas | Zippy Cloud{% endblock %}
+{% block page_title %}Vendas{% endblock %}
+{% block content %}
+  <div class="page-actions">
+    <p class="muted">Histórico completo das vendas realizadas.</p>
+    <a class="btn primary" href="{{ url_for('carrinho') }}">+ Nova venda</a>
+  </div>
+  <section class="panel">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Venda</th>
+            <th>Data</th>
+            <th>Cliente</th>
+            <th>Atendente</th>
+            <th>Itens</th>
+            <th>Desconto</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in vendas %}
+            <tr>
+              <td>
+                <a class="link" href="{{ url_for('venda_detalhe', item_id=item.id) }}">
+                  <strong>#{{ item.id }}</strong>
+                </a>
+              </td>
+              <td>{{ item.data_venda.strftime('%d/%m/%Y %H:%M') }}</td>
+              <td>{{ item.cliente.nome }}</td>
+              <td>{{ item.funcionario.nome }}</td>
+              <td>{{ item.itens|sum(attribute='quantidade') }}</td>
+              <td>{{ item.desconto|brl }}</td>
+              <td><strong>{{ item.valor_total|brl }}</strong></td>
+            </tr>
+          {% else %}
+            <tr>
+              <td colspan="7" class="empty">Nenhuma venda.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+{% endblock %}

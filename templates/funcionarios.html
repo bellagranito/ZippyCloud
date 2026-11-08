@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block title %}Funcionários | Zippy Cloud{% endblock %}
+{% block page_title %}Funcionários{% endblock %}
+{% block content %}
+  <div class="page-actions">
+    <div>
+      <p class="muted">Gerencie usuários, perfis e acesso ao sistema.</p>
+    </div>
+    <a class="btn primary" href="{{ url_for('funcionario_novo') }}">+ Novo funcionário</a>
+  </div>
+  <section class="panel">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Funcionário</th>
+            <th>CPF</th>
+            <th>Cargo</th>
+            <th>Perfil</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in funcionarios %}
+            <tr>
+              <td>
+                <div class="name-cell">
+                  <div class="avatar small">{{ item.nome[:1] }}</div>
+                  <div>
+                    <strong>{{ item.nome }}</strong>
+                    <small>{{ item.email }}</small>
+                  </div>
+                </div>
+              </td>
+              <td>{{ item.cpf }}</td>
+              <td>{{ item.cargo }}</td>
+              <td><span class="badge">{{ item.perfil }}</span></td>
+              <td>
+                <span class="badge {{ 'success' if item.ativo else 'danger' }}">
+                  {{ 'Ativo' if item.ativo else 'Inativo' }}
+                </span>
+              </td>
+              <td class="actions">
+                <a class="btn ghost small" href="{{ url_for('funcionario_editar', item_id=item.id) }}">
+                  Editar
+                </a>
+                <form method="post" action="{{ url_for('funcionario_excluir', item_id=item.id) }}" onsubmit="return confirm('Excluir/inativar este funcionário?')">
+                  <button class="btn danger small">Excluir</button>
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+{% endblock %}

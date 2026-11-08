@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}Fornecedores | Zippy Cloud{% endblock %}
+{% block page_title %}Fornecedores{% endblock %}
+{% block content %}
+  <div class="page-actions">
+    <p class="muted">Empresas e representantes que abastecem o estoque.</p>
+    <a class="btn primary" href="{{ url_for('fornecedor_novo') }}">+ Novo fornecedor</a>
+  </div>
+  <section class="panel">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Empresa</th>
+            <th>Representante</th>
+            <th>Contato</th>
+            <th>Produtos</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in fornecedores %}
+            <tr>
+              <td>
+                <strong>{{ item.nome_empresa }}</strong>
+                <small class="block">{{ item.email or 'Sem e-mail' }}</small>
+              </td>
+              <td>{{ item.representante }}</td>
+              <td>{{ item.telefone }}</td>
+              <td><span class="badge">{{ item.produtos|length }}</span></td>
+              <td class="actions">
+                <a class="btn ghost small" href="{{ url_for('fornecedor_editar', item_id=item.id) }}">
+                  Editar
+                </a>
+                <form method="post" action="{{ url_for('fornecedor_excluir', item_id=item.id) }}">
+                  <button class="btn danger small">Excluir</button>
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+{% endblock %}

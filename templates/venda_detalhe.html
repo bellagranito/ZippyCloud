@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block title %}Venda #{{ item.id }} | Zippy Cloud{% endblock %}
+{% block page_title %}Detalhes da venda #{{ item.id }}{% endblock %}
+{% block content %}
+  <div class="sale-detail-head">
+    <div>
+      <span class="badge success">Concluída</span>
+      <h2>Venda #{{ item.id }}</h2>
+      <p class="muted">{{ item.data_venda.strftime('%d/%m/%Y às %H:%M') }}</p>
+    </div>
+    <div class="sale-total">
+      <small>Total</small>
+      <strong>{{ item.valor_total|brl }}</strong>
+    </div>
+  </div>
+  <div class="grid-2">
+    <section class="panel">
+      <h2>Produtos vendidos</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Produto</th>
+              <th>Qtd.</th>
+              <th>Unitário</th>
+              <th>Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for linha in item.itens %}
+              <tr>
+                <td>{{ linha.produto.nome }}</td>
+                <td>{{ linha.quantidade }}</td>
+                <td>{{ linha.valor_unitario|brl }}</td>
+                <td>{{ linha.subtotal|brl }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <aside class="panel">
+      <h2>Resumo</h2>
+      <div class="summary-row">
+        <span>Cliente</span>
+        <strong>{{ item.cliente.descricao() }}</strong>
+      </div>
+      <div class="summary-row">
+        <span>Atendente</span>
+        <strong>{{ item.funcionario.descricao() }}</strong>
+      </div>
+      <div class="summary-row">
+        <span>Subtotal</span>
+        <strong>{{ item.subtotal|brl }}</strong>
+      </div>
+      <div class="summary-row">
+        <span>Cupom</span>
+        <strong>{{ item.cupom.codigo if item.cupom else 'Não utilizado' }}</strong>
+      </div>
+      <div class="summary-row">
+        <span>Desconto</span>
+        <strong>{{ item.desconto|brl }}</strong>
+      </div>
+      <div class="summary-row total">
+        <span>Total</span>
+        <strong>{{ item.valor_total|brl }}</strong>
+      </div>
+    </aside>
+  </div>
+{% endblock %}

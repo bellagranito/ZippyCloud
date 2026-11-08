@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% block title %}Criar conta | Zippy Cloud{% endblock %}
+
+{% block public_content %}
+<div class="register-page">
+  <button class="theme-toggle public-theme-toggle" id="theme-toggle" type="button" aria-label="Alternar tema claro e escuro">
+    <span class="theme-sun">☀</span>
+    <span class="theme-thumb"></span>
+    <span class="theme-moon">☾</span>
+  </button>
+
+  <section class="register-brand-panel">
+    <a class="register-brand" href="{{ url_for('login') }}">
+      <img src="{{ url_for('static', filename='img/zippy-logo.png') }}" alt="Zippy Cloud">
+    </a>
+    <span class="hero-badge">Seu acesso ao Zippy Cloud</span>
+    <h1>Crie sua conta<br>em poucos passos.</h1>
+    <p>Cadastre seus dados para acessar o sistema de gestão da loja com segurança.</p>
+
+    <div class="register-benefits">
+      <span>✓ Acesso seguro</span>
+      <span>✓ Interface clara e moderna</span>
+      <span>✓ Tema claro e escuro</span>
+    </div>
+  </section>
+
+  <section class="register-form-panel">
+    <form method="post" class="register-card">
+      <div class="register-card-head">
+        <div class="login-mini-brand">
+          <img src="{{ url_for('static', filename='img/zippy-wordmark.png') }}" alt="Zippy Cloud">
+        </div>
+        <small class="eyebrow">Cadastro de usuário</small>
+        <h2>Criar sua conta</h2>
+        <p>Os campos com * são obrigatórios.</p>
+      </div>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="flash-stack register-flashes">
+            {% for category, message in messages %}
+              <div class="flash {{ category }}">{{ message }}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
+      <div class="register-section">
+        <h3>Dados pessoais</h3>
+        <div class="register-grid">
+          <label class="span-2">
+            Nome completo *
+            <input name="nome" required autocomplete="name" value="{{ request.form.get('nome', '') }}" placeholder="Seu nome completo">
+          </label>
+
+          <label>
+            CPF *
+            <input class="cpf-field" name="cpf" required inputmode="numeric" maxlength="14" value="{{ request.form.get('cpf', '') }}" placeholder="000.000.000-00">
+          </label>
+
+          <label>
+            Data de nascimento
+            <input type="date" name="data_nascimento" value="{{ request.form.get('data_nascimento', '') }}">
+          </label>
+
+          <label>
+            Telefone *
+            <input class="telefone-field" name="telefone" required inputmode="numeric" maxlength="15" autocomplete="tel" value="{{ request.form.get('telefone', '') }}" placeholder="(00) 00000-0000">
+          </label>
+
+          <label>
+            E-mail *
+            <input type="email" name="email" required autocomplete="email" value="{{ request.form.get('email', '') }}" placeholder="voce@email.com">
+          </label>
+
+          <label>
+            CEP
+            <input class="cep-field" name="cep" inputmode="numeric" maxlength="9" value="{{ request.form.get('cep', '') }}" placeholder="00000-000">
+          </label>
+
+          <label class="span-2">
+            Endereço *
+            <input class="endereco-field" name="endereco" required autocomplete="street-address" value="{{ request.form.get('endereco', '') }}" placeholder="Rua, bairro, cidade e UF">
+          </label>
+        </div>
+      </div>
+
+      <div class="register-section password-section">
+        <h3>Senha de acesso</h3>
+        <div class="register-grid">
+          <label>
+            Senha *
+            <div class="password-field-wrap">
+              <input id="cadastro-senha" type="password" name="senha" required autocomplete="new-password" placeholder="••••••••">
+              <button class="password-toggle" type="button" data-password-toggle="cadastro-senha" aria-label="Mostrar ou ocultar senha">◉</button>
+            </div>
+            <small>8+ caracteres, maiúscula, número e caractere especial.</small>
+          </label>
+
+          <label>
+            Confirmar senha *
+            <div class="password-field-wrap">
+              <input id="cadastro-confirmar-senha" type="password" name="confirmar_senha" required autocomplete="new-password" placeholder="••••••••">
+              <button class="password-toggle" type="button" data-password-toggle="cadastro-confirmar-senha" aria-label="Mostrar ou ocultar senha">◉</button>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <div class="register-actions">
+        <button class="btn primary full" type="submit">Criar conta</button>
+        <p>Já possui cadastro? <a href="{{ url_for('login') }}">Voltar para o login</a></p>
+      </div>
+    </form>
+  </section>
+</div>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block title %}Alertas | Zippy Cloud{% endblock %}
+{% block page_title %}Alertas de estoque{% endblock %}
+{% block content %}
+  <div class="page-actions">
+    <p class="muted">Alertas gerados automaticamente quando o estoque fica igual ou abaixo do mínimo.</p>
+  </div>
+  <section class="panel">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Status</th>
+            <th>Produto</th>
+            <th>Quantidade</th>
+            <th>Mínimo</th>
+            <th>Fornecedor / contato</th>
+            <th>Data</th>
+            <th>Ação</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in alertas %}
+            <tr>
+              <td>
+                <span class="badge {{ 'success' if item.resolvido else 'danger' }}">
+                  {{ 'Resolvido' if item.resolvido else 'Pendente' }}
+                </span>
+              </td>
+              <td><strong>{{ item.produto.nome }}</strong></td>
+              <td>{{ item.quantidade }}</td>
+              <td>{{ item.produto.quantidade_minima }}</td>
+              <td>
+                {{ item.produto.fornecedor.nome_empresa }}
+                <small class="block">{{ item.produto.fornecedor.telefone }}</small>
+              </td>
+              <td>{{ item.data_ocorrencia.strftime('%d/%m/%Y %H:%M') }}</td>
+              <td>
+                {% if not item.resolvido %}
+                  <form method="post" action="{{ url_for('alerta_resolver', item_id=item.id) }}">
+                    <button class="btn ghost small">Resolver</button>
+                  </form>
+                {% else %}
+                  —
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+{% endblock %}

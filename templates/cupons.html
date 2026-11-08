@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Cupons | Zippy Cloud{% endblock %}
+{% block page_title %}Cupons de fidelidade{% endblock %}
+{% block content %}
+  <div class="page-actions">
+    <p class="muted">A cada 10 produtos comprados, o desconto aumenta 5%, até o limite de 45%.</p>
+  </div>
+  <section class="coupon-grid">
+    {% for item in cupons %}
+      <article class="coupon-card {{ 'used' if item.utilizado else '' }}">
+        <div class="coupon-cut">
+        </div>
+        <small>{{ 'Utilizado' if item.utilizado else 'Cupom ativo' }}</small>
+        <strong>{{ item.desconto }}% OFF</strong>
+        <code>{{ item.codigo }}</code>
+        <p>{{ item.cliente.nome }}</p>
+        <div class="coupon-actions">
+          {% if not item.utilizado %}
+            <a class="btn ghost small" target="_blank" href="mailto:{{ item.cliente.email }}?subject=Cupom Zippy Cloud&body=Olá {{ item.cliente.nome }}, seu cupom é {{ item.codigo }} com {{ item.desconto }}% de desconto.">
+              E-mail
+            </a>
+            <a class="btn ghost small" target="_blank" href="https://wa.me/55{{ item.cliente.telefone|replace('(','')|replace(')','')|replace(' ','')|replace('-','') }}?text=Olá! Seu cupom Zippy Cloud é {{ item.codigo }} com {{ item.desconto }}% de desconto.">
+              WhatsApp
+            </a>
+          {% endif %}
+        </div>
+      </article>
+    {% else %}
+      <div class="empty-card">Nenhum cupom gerado ainda.</div>
+    {% endfor %}
+  </section>
+{% endblock %}

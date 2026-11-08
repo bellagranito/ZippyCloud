@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Login | Zippy Cloud{% endblock %}
+{% block public_content %}
+<div class="login-page">
+  <button class="theme-toggle public-theme-toggle" id="theme-toggle" type="button" aria-label="Alternar tema claro e escuro">
+    <span class="theme-sun">☀</span><span class="theme-thumb"></span><span class="theme-moon">☾</span>
+  </button>
+  <section class="login-hero">
+    <div class="login-brand"><img src="{{ url_for('static', filename='img/zippy-logo.png') }}" alt="Zippy Cloud"></div>
+    <span class="hero-badge">Gestão inteligente de loja</span>
+    <h1>Leve, organizada<br>e feita para facilitar.</h1>
+    <p>Estoque, vendas, clientes, fidelidade e relatórios em um único sistema com uma interface simples e moderna.</p>
+    <div class="hero-cards"><span>✓ Estoque em tempo real</span><span>✓ Cupons automáticos</span><span>✓ Relatórios estratégicos</span></div>
+  </section>
+  <section class="login-panel">
+    <form method="post" class="login-card">
+      <div class="login-mini-brand"><img src="{{ url_for('static', filename='img/zippy-wordmark.png') }}" alt="Zippy Cloud"></div>
+      <small class="eyebrow">Acesso ao sistema</small>
+      <h2>Bem-vindo(a)</h2>
+      <p>Entre com CPF ou e-mail e sua senha.</p>
+      {% with messages = get_flashed_messages(with_categories=true) %}{% for category, message in messages %}<div class="flash {{ category }}">{{ message }}</div>{% endfor %}{% endwith %}
+      <label>CPF ou e-mail<input name="identificador" required placeholder="admin@zippycloud.com" autocomplete="username"></label>
+      <label>Senha<input type="password" name="senha" required placeholder="••••••••" autocomplete="current-password"></label>
+      <button class="btn primary full" type="submit">Entrar</button>
+
+      <div class="signup-prompt">
+        <span>Ainda não tem cadastro?</span>
+        <a href="{{ url_for('cadastro_usuario') }}">Criar uma conta</a>
+      </div>
+
+      <small class="muted">Após 3 tentativas incorretas, o usuário é inativado.</small>
+    </form>
+  </section>
+</div>
+{% endblock %}

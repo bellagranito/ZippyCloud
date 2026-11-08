@@ -1,0 +1,24 @@
+{% extends 'base.html' %}{% block title %}{{ 'Editar' if item else 'Novo' }} funcionário | Zippy Cloud{% endblock %}{% block page_title %}{{ 'Editar funcionário' if item else 'Cadastrar funcionário' }}{% endblock %}
+{% block content %}
+<form method="post" enctype="multipart/form-data" class="panel form-card">
+  <div class="form-section"><h2>Dados pessoais</h2><div class="form-grid">
+    <label class="span-2">Nome completo<input name="nome" required value="{{ item.nome if item else '' }}"></label>
+    <label>CPF<input class="cpf-field" name="cpf" required inputmode="numeric" maxlength="14" {{ 'readonly' if item else '' }} value="{{ item.cpf if item else '' }}" placeholder="000.000.000-00"></label>
+    <label>Data de nascimento<input type="date" name="data_nascimento" value="{{ item.data_nascimento if item and item.data_nascimento else '' }}"></label>
+    <label>E-mail<input type="email" name="email" required {{ 'readonly' if item else '' }} value="{{ item.email if item else '' }}"></label>
+    <label>Telefone<input class="telefone-field" name="telefone" required inputmode="numeric" maxlength="15" value="{{ item.telefone if item else '' }}"></label>
+    <label>CEP<input class="cep-field" name="cep" inputmode="numeric" maxlength="9" value="{{ item.cep if item else '' }}" placeholder="00000-000"></label>
+    <label class="span-2">Endereço<input class="endereco-field" name="endereco" required value="{{ item.endereco if item else '' }}"></label>
+  </div></div>
+  <div class="form-section"><h2>Dados profissionais</h2><div class="form-grid">
+    <label>Cargo<input name="cargo" required value="{{ item.cargo if item else '' }}"></label>
+    <label>Salário<input type="number" step="0.01" min="0" name="salario" value="{{ item.salario if item else '' }}"></label>
+    <label>Horário de trabalho<input name="horario_trabalho" value="{{ item.horario_trabalho if item else '' }}" placeholder="08:00 às 18:00"></label>
+    <label>Perfil<select name="perfil"><option value="funcionario" {% if item and item.perfil=='funcionario' %}selected{% endif %}>Funcionário</option><option value="admin" {% if item and item.perfil=='admin' %}selected{% endif %}>Administrador</option></select></label>
+    {% if item %}<label>Status<select name="ativo"><option value="1" {% if item.ativo %}selected{% endif %}>Ativo</option><option value="0" {% if not item.ativo %}selected{% endif %}>Inativo</option></select></label>{% endif %}
+    <label>Foto (JPG/PNG)<input type="file" name="foto" accept=".jpg,.jpeg,.png"></label>
+    <label class="span-2">{{ 'Nova senha (opcional)' if item else 'Senha' }}<input type="password" name="senha" {{ '' if item else 'required' }}><small>8+ caracteres, maiúscula, número e caractere especial.</small></label>
+  </div></div>
+  <div class="form-actions"><a class="btn ghost" href="{{ url_for('funcionarios') }}">Cancelar</a><button class="btn primary">Salvar funcionário</button></div>
+</form>
+{% endblock %}

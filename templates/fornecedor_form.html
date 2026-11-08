@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}Fornecedor | Zippy Cloud{% endblock %}
+{% block page_title %}{{ 'Editar fornecedor' if item else 'Cadastrar fornecedor' }}{% endblock %}
+{% block content %}
+  <form method="post" class="panel form-card">
+    <div class="form-section">
+      <h2>Dados do fornecedor</h2>
+      <div class="form-grid">
+        <label>
+          Empresa
+          <input name="nome_empresa" required value="{{ item.nome_empresa if item else '' }}">
+        </label>
+        <label>
+          Representante
+          <input name="representante" required value="{{ item.representante if item else '' }}">
+        </label>
+        <label>
+          Telefone
+          <input class="telefone-field" name="telefone" required inputmode="numeric" maxlength="15" value="{{ item.telefone if item else '' }}">
+        </label>
+        <label>E-mail<input type="email" name="email" value="{{ item.email if item else '' }}"></label>
+        <label>
+          CEP
+          <input class="cep-field" name="cep" inputmode="numeric" maxlength="9" value="{{ item.cep if item else '' }}">
+        </label>
+        <label class="span-2">
+          Endereço
+          <input class="endereco-field" name="endereco" value="{{ item.endereco if item else '' }}">
+        </label>
+      </div>
+    </div>
+    <div class="form-actions">
+      <a class="btn ghost" href="{{ url_for('fornecedores') }}">Cancelar</a>
+      <button class="btn primary">Salvar fornecedor</button>
+    </div>
+  </form>
+{% endblock %}

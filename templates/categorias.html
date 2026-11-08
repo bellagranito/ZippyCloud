@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}Categorias | Zippy Cloud{% endblock %}
+{% block page_title %}Categorias{% endblock %}
+{% block content %}
+  <div class="grid-form-list">
+    <form method="post" class="panel form-card compact">
+      <h2>Nova categoria</h2>
+      <label>Nome da categoria<input name="nome" required placeholder="Ex.: Brinquedos"></label>
+      <button class="btn primary full">Cadastrar</button>
+    </form>
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Categorias cadastradas</h2>
+        <span class="badge">{{ categorias|length }} itens</span>
+      </div>
+      <div class="simple-list">
+        {% for item in categorias %}
+          <div>
+            <span><strong>{{ item.nome }}</strong><small>{{ item.produtos|length }} produto(s)</small></span>
+            <form method="post" action="{{ url_for('categoria_excluir', item_id=item.id) }}">
+              <button class="btn danger small">Excluir</button>
+            </form>
+          </div>
+        {% else %}
+          <div class="empty-card">Nenhuma categoria cadastrada.</div>
+        {% endfor %}
+      </div>
+    </section>
+  </div>
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block title %}Nova venda | Zippy Cloud{% endblock %}
+{% block page_title %}Nova venda{% endblock %}
+{% block content %}
+  <div class="sale-layout">
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <small>Etapa 1</small>
+          <h2>Adicionar produtos</h2>
+        </div>
+      </div>
+      <form method="post" class="inline-add">
+        <select name="produto_id" required>
+          <option value="">Selecione um produto</option>
+          {% for p in produtos %}
+            <option value="{{ p.id }}">
+              {{ p.nome }} — {{ p.valor_venda|brl }} — estoque {{ p.estoque }}
+            </option>
+          {% endfor %}
+        </select>
+        <input type="number" name="quantidade" min="1" value="1">
+        <button class="btn primary">Adicionar</button>
+      </form>
+      <div class="cart-list">
+        {% for item in items %}
+          <div class="cart-item">
+            <div>
+              <strong>{{ item.produto.nome }}</strong>
+              <small>{{ item.quantidade }} × {{ item.produto.valor_venda|brl }}</small>
+            </div>
+            <div class="cart-price">{{ item.subtotal|brl }}</div>
+            <form method="post" action="{{ url_for('carrinho_remover', produto_id=item.produto.id) }}">
+              <button class="btn danger small">Remover</button>
+            </form>
+          </div>
+        {% else %}
+          <div class="empty-card">Carrinho vazio. Adicione produtos acima.</div>
+        {% endfor %}
+      </div>
+    </section>
+    <aside class="panel checkout">
+      <div>
+        <small>Etapa 2</small>
+        <h2>Finalizar venda</h2>
+      </div>
+      <form method="post" action="{{ url_for('venda_finalizar') }}" id="checkout-form">
+        <label>
+          Cliente
+          <select name="cliente_id" id="cliente-select" required>
+            <option value="">Selecione</option>
+            {% for c in clientes %}
+              <option value="{{ c.id }}">{{ c.nome }} — {{ c.cpf }}</option>
+            {% endfor %}
+          </select>
+        </label>
+        <label>
+          Cupom
+          <select name="cupom_id" id="cupom-select">
+            <option value="">Sem cupom</option>
+          </select>
+        </label>
+        <div class="summary-row">
+          <span>Subtotal</span>
+          <strong>{{ total|brl }}</strong>
+        </div>
+        <div class="summary-row total">
+          <span>Total antes do cupom</span>
+          <strong>{{ total|brl }}</strong>
+        </div>
+        <button class="btn primary full" {% if not items %}disabled{% endif %}>Concluir venda</button>
+      </form>
+      {% if items %}
+        <form method="post" action="{{ url_for('carrinho_limpar') }}">
+          <button class="btn ghost full">Limpar carrinho</button>
+        </form>
+      {% endif %}
+    </aside>
+  </div>
+{% endblock %}

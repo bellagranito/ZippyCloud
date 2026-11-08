@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}Produtos | Zippy Cloud{% endblock %}
+{% block page_title %}Produtos{% endblock %}
+{% block content %}
+  <div class="page-actions">
+    <form class="filterbar">
+      <input name="q" value="{{ termo }}" placeholder="Nome ou código">
+      <select name="categoria_id">
+        <option value="">Todas as categorias</option>
+        {% for cat in categorias %}
+          <option value="{{ cat.id }}" {% if categoria_id==cat.id %}selected{% endif %}>
+            {{ cat.nome }}
+          </option>
+        {% endfor %}
+      </select>
+      <button class="btn ghost">Filtrar</button>
+    </form>
+    <a class="btn primary" href="{{ url_for('produto_novo') }}">+ Novo produto</a>
+  </div>
+  <section class="panel">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Produto</th>
+            <th>Categoria</th>
+            <th>Fornecedor</th>
+            <th>Venda</th>
+            <th>Estoque</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in produtos %}
+            <tr>
+              <td>
+                <div class="product-cell">
+                  <div class="product-thumb">{{ item.nome[:1] }}</div>
+                  <span><strong>{{ item.nome }}</strong><small>{{ item.codigo_barras }}</small></span>
+                </div>
+              </td>
+              <td>{{ item.categoria.nome }}</td>
+              <td>{{ item.fornecedor.nome_empresa }}</td>
+              <td>{{ item.valor_venda|brl }}</td>
+              <td>
+                <span class="badge {{ 'danger' if item.estoque_baixo else 'success' }}">
+                  {{ item.estoque }} un.
+                </span>
+              </td>
+              <td class="actions">
+                <a class="btn ghost small" href="{{ url_for('produto_editar', item_id=item.id) }}">Editar</a>
+                <form method="post" action="{{ url_for('produto_excluir', item_id=item.id) }}">
+                  <button class="btn danger small">Excluir</button>
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+{% endblock %}

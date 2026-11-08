@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>{% block title %}Zippy Cloud{% endblock %}</title>
+  <script>
+    (() => {
+      const saved = localStorage.getItem('zippy-theme');
+      const preferred = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      document.documentElement.dataset.theme = saved || preferred;
+    })();
+  </script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+{% if usuario_atual %}
+<div class="app-shell">
+  <header class="global-topbar">
+    <div class="topbar-left">
+      <button class="icon-button menu-button" id="menu-toggle" type="button" aria-label="Abrir menu" aria-controls="app-drawer" aria-expanded="false">☰</button>
+
+      <a class="top-brand" href="{{ url_for('dashboard') }}" aria-label="Zippy Cloud - página inicial">
+        <img class="brand-symbol" src="{{ url_for('static', filename='img/zippy-mark.png') }}" alt="">
+        <img class="brand-wordmark" src="{{ url_for('static', filename='img/zippy-wordmark.png') }}" alt="Zippy Cloud">
+      </a>
+
+      <nav class="top-nav" aria-label="Atalhos principais">
+        <a class="top-nav-link {{ 'active' if request.endpoint == 'dashboard' else '' }}" href="{{ url_for('dashboard') }}"><span>⌂</span> Home</a>
+        <a class="top-nav-link {{ 'active' if request.endpoint in ['carrinho', 'carrinho_remover', 'carrinho_limpar', 'venda_finalizar'] else '' }}" href="{{ url_for('carrinho') }}"><span>🛒</span> PDV</a>
+        <a class="top-nav-link {{ 'active' if request.endpoint == 'produto_novo' else '' }}" href="{{ url_for('produto_novo') }}"><span>＋</span> Novo produto</a>
+      </nav>
+    </div>
+
+    <div class="topbar-right">
+      <div class="notification-wrap">
+        <button class="icon-button notification-button" id="notification-toggle" type="button" aria-label="Abrir alertas" aria-expanded="false">
+          <span class="notification-bell">♢</span>
+          {% if alertas_count %}<span class="notification-badge">{{ alertas_count if alertas_count < 100 else '99+' }}</span>{% endif %}
+        </button>
+        <div class="notification-popover" id="notification-popover" hidden>
+          <div class="popover-head">
+            <div><strong>Alertas</strong><small>{{ alertas_count }} pendente(s)</small></div>
+            <a href="{{ url_for('alertas') }}">Ver todos</a>
+          </div>
+          <div class="popover-list">
+            {% for alerta in alertas_menu %}
+            <a class="popover-alert" href="{{ url_for('alertas') }}">
+              <span class="alert-dot"></span>
+              <span><strong>{{ alerta.produto.nome }}</strong><small>{{ alerta.quantidade }} un. · mínimo {{ alerta.produto.quantidade_minima }}</small></span>
+            </a>
+            {% else %}
+            <div class="popover-empty">Nenhum alerta pendente.</div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Alternar tema claro e escuro">
+        <span class="theme-sun">☀</span>
+        <span class="theme-thumb"></span>
+        <span class="theme-moon">☾</span>
+      </button>
+
+      <div class="top-user">
+        <div class="avatar">{{ usuario_atual.nome[:1].upper() }}</div>
+        <div class="top-user-copy"><strong>{{ usuario_atual.nome }}</strong><small>{{ usuario_atual.cargo }}</small></div>
+      </div>
+    </div>
+  </header>
+
+  <div class="drawer-overlay" id="drawer-overlay" hidden></div>
+  <aside class="app-drawer" id="app-drawer" aria-hidden="true">
+    <div class="drawer-head">
+      <a class="drawer-brand" href="{{ url_for('dashboard') }}">
+        <img src="{{ url_for('static', filename='img/zippy-logo.png') }}" alt="Zippy Cloud">
+      </a>
+      <button class="icon-button drawer-close" id="drawer-close" type="button" aria-label="Fechar menu">×</button>
+    </div>
+
+    <nav class="drawer-nav" aria-label="Menu principal">
+      <span class="drawer-label">Navegação</span>
+      <a class="{{ 'active' if request.endpoint == 'dashboard' else '' }}" href="{{ url_for('dashboard') }}"><span class="drawer-icon">⌂</span><span>Dashboard</span></a>
+      <a class="{{ 'active' if request.endpoint in ['produtos','produto_novo','produto_editar'] else '' }}" href="{{ url_for('produtos') }}"><span class="drawer-icon">▣</span><span>Produtos</span></a>
+      <a class="{{ 'active' if request.endpoint in ['clientes','cliente_novo','cliente_editar','cliente_detalhe'] else '' }}" href="{{ url_for('clientes') }}"><span class="drawer-icon">♙</span><span>Clientes</span></a>
+      <a class="{{ 'active' if request.endpoint in ['fornecedores','fornecedor_novo','fornecedor_editar'] else '' }}" href="{{ url_for('fornecedores') }}"><span class="drawer-icon">◇</span><span>Fornecedores</span></a>
+      <a class="{{ 'active' if request.endpoint in ['categorias','categoria_excluir'] else '' }}" href="{{ url_for('categorias') }}"><span class="drawer-icon">◈</span><span>Categorias</span></a>
+
+      <span class="drawer-label">Operação</span>
+      <a class="{{ 'active' if request.endpoint in ['carrinho','venda_finalizar'] else '' }}" href="{{ url_for('carrinho') }}"><span class="drawer-icon">🛒</span><span>PDV / Nova venda</span></a>
+      <a class="{{ 'active' if request.endpoint in ['vendas','venda_detalhe'] else '' }}" href="{{ url_for('vendas') }}"><span class="drawer-icon">▤</span><span>Vendas</span></a>
+      <a class="{{ 'active' if request.endpoint == 'cupons' else '' }}" href="{{ url_for('cupons') }}"><span class="drawer-icon">%</span><span>Cupons</span></a>
+      <a class="{{ 'active' if request.endpoint in ['alertas','alerta_resolver'] else '' }}" href="{{ url_for('alertas') }}"><span class="drawer-icon">△</span><span>Alertas</span>{% if alertas_count %}<span class="drawer-count">{{ alertas_count }}</span>{% endif %}</a>
+
+      {% if usuario_atual.is_admin %}
+      <span class="drawer-label">Administração</span>
+      <a class="{{ 'active' if request.endpoint in ['funcionarios','funcionario_novo','funcionario_editar'] else '' }}" href="{{ url_for('funcionarios') }}"><span class="drawer-icon">♙</span><span>Funcionários</span></a>
+      <a class="{{ 'active' if request.endpoint in ['relatorios','relatorio_imprimir'] else '' }}" href="{{ url_for('relatorios') }}"><span class="drawer-icon">▥</span><span>Relatórios</span></a>
+      {% endif %}
+    </nav>
+
+    <div class="drawer-footer">
+      <div class="drawer-user">
+        <div class="avatar large">{{ usuario_atual.nome[:1].upper() }}</div>
+        <div><strong>{{ usuario_atual.nome }}</strong><small>{{ usuario_atual.cargo }}</small></div>
+      </div>
+      <a class="logout" href="{{ url_for('logout') }}">↪ <span>Sair</span></a>
+    </div>
+  </aside>
+
+  <main class="app-main">
+    <div class="content-shell">
+      {% block page_header %}
+      <header class="page-heading">
+        <div>
+          <small class="eyebrow">Zippy Cloud</small>
+          <h1>{% block page_title %}Painel{% endblock %}</h1>
+        </div>
+        <div class="date-chip"><span>▣</span><div><small>Hoje</small><strong>{{ agora.strftime('%d/%m/%Y') }}</strong></div></div>
+      </header>
+      {% endblock %}
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-stack">
+          {% for category, message in messages %}<div class="flash {{ category }}">{{ message }}</div>{% endfor %}
+        </div>
+        {% endif %}
+      {% endwith %}
+
+      {% block content %}{% endblock %}
+    </div>
+  </main>
+</div>
+{% else %}
+  {% block public_content %}{% endblock %}
+{% endif %}
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

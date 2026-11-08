@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block title %}{{ item.nome }} | Zippy Cloud{% endblock %}
+{% block page_title %}Histórico do cliente{% endblock %}
+{% block content %}
+  <div class="page-actions">
+    <div>
+      <h2 class="detail-title">{{ item.nome }}</h2>
+      <p class="muted">{{ item.cpf }} · {{ item.telefone }} · {{ item.email or 'Sem e-mail' }}</p>
+    </div>
+    <a class="btn ghost" href="{{ url_for('cliente_editar', item_id=item.id) }}">Editar cadastro</a>
+  </div>
+  <div class="kpi-grid compact-kpis">
+    <article class="kpi">
+      <span class="kpi-icon">R$</span>
+      <div>
+        <small>Total gasto</small>
+        <strong>{{ total_gasto|brl }}</strong>
+      </div>
+    </article>
+    <article class="kpi">
+      <span class="kpi-icon">▤</span>
+      <div>
+        <small>Compras</small>
+        <strong>{{ vendas|length }}</strong>
+      </div>
+    </article>
+    <article class="kpi">
+      <span class="kpi-icon">★</span>
+      <div>
+        <small>Progresso fidelidade</small>
+        <strong>{{ item.itens_fidelidade }}/10</strong>
+      </div>
+    </article>
+    <article class="kpi">
+      <span class="kpi-icon">%</span>
+      <div>
+        <small>Cupom ativo</small>
+        <strong>{{ (cupom_ativo.desconto|string + '%') if cupom_ativo else '—' }}</strong>
+      </div>
+    </article>
+  </div>
+  <section class="panel">
+    <div class="panel-head">
+      <h2>Histórico de compras</h2>
+      <span class="badge">{{ vendas|length }} venda(s)</span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Venda</th>
+            <th>Data</th>
+            <th>Atendente</th>
+            <th>Itens</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for venda in vendas %}
+            <tr>
+              <td>
+                <a class="link" href="{{ url_for('venda_detalhe', item_id=venda.id) }}">#{{ venda.id }}</a>
+              </td>
+              <td>{{ venda.data_venda.strftime('%d/%m/%Y %H:%M') }}</td>
+              <td>{{ venda.funcionario.nome }}</td>
+              <td>{{ venda.itens|sum(attribute='quantidade') }}</td>
+              <td>{{ venda.valor_total|brl }}</td>
+            </tr>
+          {% else %}
+            <tr>
+              <td colspan="5" class="empty">Cliente sem compras registradas.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+{% endblock %}

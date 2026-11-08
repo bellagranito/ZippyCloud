@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Cliente | Zippy Cloud{% endblock %}
+{% block page_title %}{{ 'Editar cliente' if item else 'Cadastrar cliente' }}{% endblock %}
+{% block content %}
+<form method="post" class="panel form-card">
+  <div class="form-section">
+    <h2>Dados do cliente</h2>
+    <div class="form-grid">
+      <label class="span-2">Nome completo<input name="nome" required value="{{ item.nome if item else '' }}"></label>
+      <label>CPF<input class="cpf-field" name="cpf" required inputmode="numeric" maxlength="14" placeholder="000.000.000-00" {{ 'readonly' if item else '' }} value="{{ item.cpf if item else '' }}"></label>
+      <label>Data de nascimento<input type="date" name="data_nascimento" value="{{ item.data_nascimento if item and item.data_nascimento else '' }}"></label>
+      <label>Telefone<input class="telefone-field" name="telefone" required inputmode="numeric" maxlength="15" placeholder="(00) 00000-0000" value="{{ item.telefone if item else '' }}"></label>
+      <label>E-mail<input type="email" name="email" value="{{ item.email if item else '' }}"></label>
+      <label>CEP<input class="cep-field" name="cep" inputmode="numeric" maxlength="9" value="{{ item.cep if item else '' }}" placeholder="00000-000"></label>
+      <label class="span-2">Endereço<input class="endereco-field" name="endereco" value="{{ item.endereco if item else '' }}"></label>
+    </div>
+  </div>
+  <div class="info-box">A consulta do CEP usa a API ViaCEP. Se o CEP não existir, o campo é marcado como inválido.</div>
+  <div class="form-actions"><a class="btn ghost" href="{{ url_for('clientes') }}">Cancelar</a><button class="btn primary">Salvar cliente</button></div>
+</form>
+{% endblock %}

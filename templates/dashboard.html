@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard | Zippy Cloud{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block page_header %}
+<header class="page-heading dashboard-heading">
+  <div>
+    <small class="eyebrow">Bem-vinda de volta</small>
+    <h1>Olá, {{ usuario_atual.nome.split(' ')[0] }}!</h1>
+    <p>Aqui está um resumo da sua loja hoje.</p>
+  </div>
+  <div class="date-chip"><span>▣</span><div><small>{{ ['Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado','Domingo'][agora.weekday()] }}</small><strong>{{ agora.strftime('%d/%m/%Y') }}</strong></div></div>
+</header>
+{% endblock %}
+
+{% block content %}
+<div class="kpi-grid dashboard-kpis">
+  <article class="kpi kpi-blue">
+    <span class="kpi-icon">R$</span>
+    <div><small>Faturamento</small><strong>{{ indicadores.faturamento|brl }}</strong><span class="kpi-note">Total registrado no sistema</span></div>
+  </article>
+  <article class="kpi kpi-lavender">
+    <span class="kpi-icon">▤</span>
+    <div><small>Vendas realizadas</small><strong>{{ indicadores.vendas }}</strong><span class="kpi-note">Vendas concluídas</span></div>
+  </article>
+  <article class="kpi kpi-rose">
+    <span class="kpi-icon">♙</span>
+    <div><small>Clientes</small><strong>{{ indicadores.clientes }}</strong><span class="kpi-note">Clientes cadastrados</span></div>
+  </article>
+  <article class="kpi kpi-warning">
+    <span class="kpi-icon">!</span>
+    <div><small>Produtos em alerta</small><strong>{{ indicadores.produtos_baixos }}</strong><span class="kpi-note">Estoque igual ou abaixo do mínimo</span></div>
+  </article>
+</div>
+
+<div class="grid-2 dashboard-grid">
+  <section class="panel">
+    <div class="panel-head">
+      <div><small>Movimentação</small><h2>Últimas vendas</h2></div>
+      <a class="link" href="{{ url_for('vendas') }}">Ver todas</a>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>Cliente</th><th>Funcionário</th><th>Total</th></tr></thead>
+        <tbody>
+          {% for venda in ultimas_vendas %}
+          <tr><td>#{{ venda.id }}</td><td>{{ venda.cliente.nome }}</td><td>{{ venda.funcionario.nome }}</td><td><strong>{{ venda.valor_total|brl }}</strong></td></tr>
+          {% else %}
+          <tr><td colspan="4" class="empty">Nenhuma venda registrada.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <div><small>Atenção</small><h2>Produtos com estoque baixo</h2></div>
+      <a class="link" href="{{ url_for('alertas') }}">Ver todos</a>
+    </div>
+    <div class="alert-list">
+      {% for alerta in alertas %}
+      <div class="alert-row">
+        <span class="dot danger"></span>
+        <div><strong>{{ alerta.produto.nome }}</strong><small>{{ alerta.quantidade }} un. · mínimo {{ alerta.produto.quantidade_minima }}</small></div>
+        <span class="badge danger">Baixo</span>
+      </div>
+      {% else %}
+      <div class="empty-card">Nenhum alerta pendente.</div>
+      {% endfor %}
+    </div>
+  </section>
+</div>
+
+<section class="panel quick-section">
+  <div class="panel-head"><div><small>Atalhos</small><h2>Acessos rápidos</h2></div></div>
+  <div class="quick-actions six-actions">
+    <a href="{{ url_for('carrinho') }}" class="action-card action-blue"><b>🛒</b><span><strong>Nova venda</strong><small>Abrir PDV</small></span></a>
+    <a href="{{ url_for('produto_novo') }}" class="action-card action-lavender"><b>▣</b><span><strong>Novo produto</strong><small>Cadastrar estoque</small></span></a>
+    <a href="{{ url_for('cliente_novo') }}" class="action-card action-rose"><b>♙</b><span><strong>Novo cliente</strong><small>Cadastrar cliente</small></span></a>
+    <a href="{{ url_for('fornecedor_novo') }}" class="action-card action-cyan"><b>◇</b><span><strong>Fornecedor</strong><small>Novo cadastro</small></span></a>
+    <a href="{{ url_for('cupons') }}" class="action-card action-purple"><b>%</b><span><strong>Cupons</strong><small>Fidelidade</small></span></a>
+    {% if usuario_atual.is_admin %}<a href="{{ url_for('relatorios') }}" class="action-card action-blue"><b>▥</b><span><strong>Relatórios</strong><small>Indicadores</small></span></a>{% endif %}
+  </div>
+</section>
+{% endblock %}
